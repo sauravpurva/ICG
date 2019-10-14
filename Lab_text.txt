@@ -1,0 +1,12 @@
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+ 
+fig = plt.figure()
+ax2 = fig.add_subplot(111, aspect='equal')
+ 
+for i in range(0, 10):
+    ax2.add_patch(
+         patches.Ellipse((0.5, 0.5), (i+1)*0.07,(i+1)*0.05, fill=False)
+    )
+ 
+plt.show()
