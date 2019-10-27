@@ -23,6 +23,58 @@ def generatePiece():
 
     return pieceShape, pieceColors
     
+def placePiece(pieceShape, pieceColors, startx, starty):
+
+    if pieceShape == PIECE_T:
+        pieceColors = {'lite': LITERED, 'dark': DARKRED}
+        piece = [{'x': startx     , 'y': starty     , 'block colors': pieceColors}, # pivot point
+                 {'x': startx - 1 , 'y': starty     , 'block colors': pieceColors},
+                 {'x': startx + 1 , 'y': starty     , 'block colors': pieceColors},
+                 {'x': startx     , 'y': starty + 1 , 'block colors': pieceColors}]
+
+    elif pieceShape == PIECE_L:
+        pieceColors = {'lite': LITEBLUE, 'dark': DARKBLUE}
+        piece = [{'x': startx     , 'y': starty     , 'block colors': pieceColors}, # pivot point
+                 {'x': startx - 1 , 'y': starty     , 'block colors': pieceColors},
+                 {'x': startx + 1 , 'y': starty     , 'block colors': pieceColors},
+                 {'x': startx - 1 , 'y': starty + 1 , 'block colors': pieceColors}]
+
+    elif pieceShape == PIECE_J:
+        pieceColors = {'lite': LITEGREEN, 'dark': DARKGREEN}
+        piece = [{'x': startx     , 'y': starty     , 'block colors': pieceColors}, # pivot point
+                 {'x': startx - 1 , 'y': starty     , 'block colors': pieceColors},
+                 {'x': startx + 1 , 'y': starty     , 'block colors': pieceColors},
+                 {'x': startx + 1 , 'y': starty + 1 , 'block colors': pieceColors}]
+
+    elif pieceShape == PIECE_Z:
+        pieceColors = {'lite': LITEYELLOW, 'dark': DARKYELLOW}
+        piece = [{'x': startx     , 'y': starty     , 'block colors': pieceColors}, # pivot point
+                 {'x': startx - 1 , 'y': starty     , 'block colors': pieceColors},
+                 {'x': startx     , 'y': starty + 1 , 'block colors': pieceColors},
+                 {'x': startx + 1 , 'y': starty + 1 , 'block colors': pieceColors}]
+                    
+    elif pieceShape == PIECE_S:
+        pieceColors = {'lite': LITEPURPLE, 'dark': DARKPURPLE}
+        piece = [{'x': startx     , 'y': starty     , 'block colors': pieceColors}, # pivot point
+                 {'x': startx + 1 , 'y': starty     , 'block colors': pieceColors},
+                 {'x': startx     , 'y': starty + 1 , 'block colors': pieceColors},
+                 {'x': startx - 1 , 'y': starty + 1 , 'block colors': pieceColors}]
+                    
+    elif pieceShape == PIECE_O:
+        pieceColors = {'lite': LITEORANGE, 'dark': DARKORANGE}
+        piece = [{'x': startx     , 'y': starty     , 'block colors': pieceColors}, # pivot point
+                 {'x': startx + 1 , 'y': starty     , 'block colors': pieceColors},
+                 {'x': startx     , 'y': starty + 1 , 'block colors': pieceColors},
+                 {'x': startx + 1 , 'y': starty + 1 , 'block colors': pieceColors}]
+        
+    elif pieceShape == PIECE_I:
+        pieceColors = {'lite': LITETEAL, 'dark': DARKTEAL}
+        piece = [{'x': startx     , 'y': starty - 1 , 'block colors': pieceColors}, # pivot point
+                 {'x': startx     , 'y': starty     , 'block colors': pieceColors},
+                 {'x': startx     , 'y': starty + 1 , 'block colors': pieceColors},
+                 {'x': startx     , 'y': starty + 2 , 'block colors': pieceColors}]
+                    
+    return piece
 
 def movePiece(piece, direction):
 
@@ -40,7 +92,6 @@ def movePiece(piece, direction):
             piece[i]['x'] += 1
 
     return piece
-
 
 def rotatePiece(piece, pile):
 
@@ -86,7 +137,221 @@ def rotatePiece(piece, pile):
     
     return piece_copy
 
+def pieceHitSide(piece):
 
+    for block in piece:
+        blockRect = pygame.Rect(block['x']*CELLSIZE, block['y']*CELLSIZE, CELLSIZE, CELLSIZE)
+        if blockRect.left == 0:
+            return 'LEFT WALL'
+        if blockRect.right == WINDOWWIDTH_TETRIS:
+            return 'RIGHT WALL'
+
+    return None
+
+def pieceHitBottom(piece):
+
+    for block in piece:
+        blockRect = pygame.Rect(block['x']*CELLSIZE, block['y']*CELLSIZE, CELLSIZE, CELLSIZE)
+        if blockRect.bottom == WINDOWHEIGHT:
+            return True
+        
+    return False
+
+def addPieceToPile(piece, pile):
+
+    for block in piece:
+        pile.append(block)
+
+def pieceHitPileFromTop(piece, pile):
+
+    for pieceBlock in piece:
+        pieceBlockRect = pygame.Rect(pieceBlock['x']*CELLSIZE, pieceBlock['y']*CELLSIZE, CELLSIZE, CELLSIZE)
+        for pileBlock in pile:
+            pileBlockRect = pygame.Rect(pileBlock['x']*CELLSIZE, pileBlock['y']*CELLSIZE, CELLSIZE, CELLSIZE)
+            if pieceBlockRect.right == pileBlockRect.right and pieceBlockRect.left == pileBlockRect.left and pieceBlockRect.bottom == pileBlockRect.top:
+                return True
+
+    return False
+
+def pieceHitPileFromLeft(piece, pile):
+
+    for pieceBlock in piece:
+        pieceBlockRect = pygame.Rect(pieceBlock['x']*CELLSIZE, pieceBlock['y']*CELLSIZE, CELLSIZE, CELLSIZE)
+        for pileBlock in pile:
+            pileBlockRect = pygame.Rect(pileBlock['x']*CELLSIZE, pileBlock['y']*CELLSIZE, CELLSIZE, CELLSIZE)
+            if pieceBlockRect.bottom == pileBlockRect.bottom and pieceBlockRect.top == pileBlockRect.top and pieceBlockRect.right == pileBlockRect.left:
+                return True
+
+    return False
+
+def pieceHitPileFromRight(piece, pile):
+
+    for pieceBlock in piece:
+        pieceBlockRect = pygame.Rect(pieceBlock['x']*CELLSIZE, pieceBlock['y']*CELLSIZE, CELLSIZE, CELLSIZE)
+        for pileBlock in pile:
+            pileBlockRect = pygame.Rect(pileBlock['x']*CELLSIZE, pileBlock['y']*CELLSIZE, CELLSIZE, CELLSIZE)
+            if pieceBlockRect.bottom == pileBlockRect.bottom and pieceBlockRect.top == pileBlockRect.top and pieceBlockRect.left == pileBlockRect.right:
+                return True
+
+    return False
+
+def checkFullRow(pile):
+
+    blockInCell = blankBoolDS(CELLWIDTH_TETRIS, CELLHEIGHT)
+    fullRowYs = []
+
+    for block in pile:
+        blockInCell[block['y']][block['x']] = True
+
+    for y in range(CELLHEIGHT):
+        if False not in blockInCell[y][:]:
+            fullRowYs.append(y)
+
+    return fullRowYs
+
+def removeAndScoreRows(fullRowYs, pile):
+
+    for block in pile[:]:
+        if block['y'] in fullRowYs:
+            pile.remove(block)
+
+    if len(fullRowYs) > 0: 
+        score = 100*len(fullRowYs)*len(fullRowYs)
+    else:
+        score = 0
+
+    return score
+
+def moveRows(fullRowYs, pile):
+
+    n = 0
+    nList = []
+    fullRowYs = sorted(fullRowYs)
+
+    for row in range(CELLHEIGHT, -1, -1):
+        if len(fullRowYs) > 0 and row < fullRowYs[-1]:
+            n += 1
+            fullRowYs.remove(fullRowYs[-1])
+        nList.append(n)
+
+    nList = list(reversed(nList))
+
+    for block in pile:
+        block['y'] += nList[block['y']]
+
+def blankBoolDS(sizeX, sizeY):
+
+    boolDS = []
+    for y in range(sizeY):
+        boolDS.append([False]*sizeX)
+
+    return boolDS
+
+def gameLose(piece, pile):
+
+    for pileBlock in pile:
+        if pileBlock['y'] in range(0,2): 
+            return True
+
+    return False
+
+def drawPieceOrPile(pieceOrPile):
+
+    for block in pieceOrPile:
+        x = block['x'] * CELLSIZE
+        y = block['y'] * CELLSIZE
+        pieceSegmentOuter = pygame.Rect(x, y, CELLSIZE, CELLSIZE)
+        pieceSegmentInner = pygame.Rect(x+4, y+4, CELLSIZE-8, CELLSIZE-8)
+        pygame.draw.rect(DISPLAYSURF, block['block colors']['lite'], pieceSegmentOuter)
+        pygame.draw.rect(DISPLAYSURF, block['block colors']['dark'], pieceSegmentInner)
+
+def drawSideWindow():
+
+    sideWindowRect = pygame.Rect(WINDOWWIDTH_TETRIS, 0, WINDOWWIDTH_SIDE, WINDOWHEIGHT)
+    nextPieceRect = pygame.Rect(0, 0, CELLSIZE*5, CELLSIZE*6)
+    nextPieceRect.centerx = WINDOWWIDTH_TETRIS+0.5*WINDOWWIDTH_SIDE
+    nextPieceRect.centery = 140 ## number found after significant tweaking
+
+    pygame.draw.rect(DISPLAYSURF, BGCOLOR, sideWindowRect)
+    pygame.draw.rect(DISPLAYSURF, BGCOLOR, nextPieceRect)
+
+def drawScore(totalScore):
+    
+    scoreTitleSurf = BASICFONT.render('SCORE:', True, TEXTCOLOR)
+    scoreTitleRect = scoreTitleSurf.get_rect()
+    scoreTitleRect.centerx = WINDOWWIDTH_TETRIS+0.5*WINDOWWIDTH_SIDE
+    scoreTitleRect.centery = 370
+    DISPLAYSURF.blit(scoreTitleSurf, scoreTitleRect)
+    
+    scoreNumberSurf = BASICFONT.render('%s' %(totalScore), True, TEXTCOLOR)
+    scoreNumberRect = scoreNumberSurf.get_rect()
+    scoreNumberRect.centerx = WINDOWWIDTH_TETRIS+0.5*WINDOWWIDTH_SIDE
+    scoreNumberRect.centery = scoreTitleRect.centery + 30
+    DISPLAYSURF.blit(scoreNumberSurf, scoreNumberRect)
+    
+def drawGrid(start_x, end_x, start_y, end_y):
+
+    for x in range(start_x, end_x+CELLSIZE, CELLSIZE):
+        pygame.draw.line(DISPLAYSURF, GRIDCOLOR, (x, start_y), (x, end_y))
+    for y in range(start_y, end_y, CELLSIZE): 
+        pygame.draw.line(DISPLAYSURF, GRIDCOLOR, (start_x, y), (end_x, y))
+
+def showGameOver():
+    
+    gameOverFont = pygame.font.SysFont('Courier New', 36)
+    gameSurf = gameOverFont.render('GAME', True, TEXTCOLOR)
+    overSurf = gameOverFont.render('OVER', True, TEXTCOLOR)
+    gameRect = gameSurf.get_rect()
+    overRect = overSurf.get_rect()
+    gameRect.centerx = WINDOWWIDTH_TETRIS+0.5*WINDOWWIDTH_SIDE
+    gameRect.centery = 270
+    overRect.centerx = WINDOWWIDTH_TETRIS+0.5*WINDOWWIDTH_SIDE
+    overRect.centery = gameRect.centery + 30
+
+    DISPLAYSURF.blit(gameSurf, gameRect)
+    DISPLAYSURF.blit(overSurf, overRect)
+    drawPressKeyMsg()
+    pygame.display.update()
+    pygame.time.wait(500)
+    checkForKeyPress() 
+
+    while True:
+        if checkForKeyPress():
+            pygame.event.get()
+            return
+
+def drawPressKeyMsg():
+
+    pressKeyFont = pygame.font.SysFont('Courier New', 16)
+
+    pressKey1Surf = pressKeyFont.render('PRESS ANY KEY', True, TEXTCOLOR)
+    pressKey1Rect = pressKey1Surf.get_rect()
+    pressKey1Rect.centerx = WINDOWWIDTH_TETRIS+0.5*WINDOWWIDTH_SIDE
+    pressKey1Rect.centery = 460
+    DISPLAYSURF.blit(pressKey1Surf, pressKey1Rect)
+
+    pressKey2Surf = pressKeyFont.render('TO PLAY AGAIN', True, TEXTCOLOR)
+    pressKey2Rect = pressKey2Surf.get_rect()                    
+    pressKey2Rect.centerx = WINDOWWIDTH_TETRIS+0.5*WINDOWWIDTH_SIDE
+    pressKey2Rect.centery = pressKey1Rect.centery + 20
+    DISPLAYSURF.blit(pressKey2Surf, pressKey2Rect)
+
+def checkForKeyPress():
+    
+    if len(pygame.event.get(QUIT)) > 0:
+        terminate()
+
+    keyUpEvents = pygame.event.get(KEYUP)
+    if len(keyUpEvents) == 0:
+        return None
+    if keyUpEvents[0].key == K_ESCAPE:
+        terminate()
+    return keyUpEvents[0].key
+
+def terminate():
+        
+    pygame.quit()
+    sys.exit()
 
 FPS = 25
 WINDOWWIDTH_TOTAL = 480
@@ -94,9 +359,9 @@ WINDOWWIDTH_TETRIS = 300
 WINDOWWIDTH_SIDE = WINDOWWIDTH_TOTAL-WINDOWWIDTH_TETRIS
 WINDOWHEIGHT = 600
 CELLSIZE = 20
-assert WINDOWWIDTH_TETRIS % CELLSIZE == 0, #Window width must be a multiple of cell size.
-assert WINDOWHEIGHT % CELLSIZE == 0, #Window height must be a multiple of cell size.
-assert WINDOWWIDTH_TOTAL > WINDOWWIDTH_TETRIS, #Tetris window is larger than total window.
+assert WINDOWWIDTH_TETRIS % CELLSIZE == 0, "Window width must be a multiple of cell size."
+assert WINDOWHEIGHT % CELLSIZE == 0, "Window height must be a multiple of cell size."
+assert WINDOWWIDTH_TOTAL > WINDOWWIDTH_TETRIS, "Tetris window is larger than total window."
 CELLWIDTH_TOTAL = int(WINDOWWIDTH_TOTAL/CELLSIZE)
 CELLWIDTH_TETRIS = int(WINDOWWIDTH_TETRIS/CELLSIZE)
 CELLHEIGHT = int(WINDOWHEIGHT/CELLSIZE)
@@ -145,8 +410,8 @@ NEXTPIECE = 1
 
 CURRENTPIECE_STARTX = int(CELLWIDTH_TETRIS/2)
 CURRENTPIECE_STARTY = 1
-NEXTPIECE_STARTX = 19 ## requires tweaking if window dimensions are changed
-NEXTPIECE_STARTY = 6 ## requires tweaking if window dimensions are changed
+NEXTPIECE_STARTX = 19 
+NEXTPIECE_STARTY = 6 
 
 def main():
 
@@ -165,14 +430,89 @@ def main():
         pygame.mixer.music.stop()
         showGameOver()
 
-def runGame(): #incomplete
+def runGame():
 
     pieces = [[],[]]
 
-def terminate():
+    currentPieceShape, currentPieceColors = generatePiece()
+    nextPieceShape, nextPieceColors = generatePiece()
+    pieces[CURRENTPIECE] = placePiece(currentPieceShape, currentPieceColors, CURRENTPIECE_STARTX, CURRENTPIECE_STARTY)
+    pieces[NEXTPIECE] = placePiece(nextPieceShape, nextPieceColors, NEXTPIECE_STARTX, NEXTPIECE_STARTY)
+
+    pile = []
+    pieceMoveCounter = 0
+    totalScore = 0
+
+    movePieceLeft = False
+    movePieceRight = False
+    speedUp = False
+
+    while True: 
+
+        pieceMoveCounter += 1
+
+        if pieceMoveCounter % 3 == 0 and (pieceHitBottom(pieces[CURRENTPIECE]) or pieceHitPileFromTop(pieces[CURRENTPIECE], pile)):
+            addPieceToPile(pieces[CURRENTPIECE], pile)
+            currentPieceShape, currentPieceColors = nextPieceShape, nextPieceColors
+            pieces[CURRENTPIECE] = placePiece(currentPieceShape, currentPieceColors, CURRENTPIECE_STARTX, CURRENTPIECE_STARTY)
+            nextPieceShape, nextPieceColors = generatePiece()
+            pieces[NEXTPIECE] = placePiece(nextPieceShape, nextPieceColors, NEXTPIECE_STARTX, NEXTPIECE_STARTY)
+            pieceMoveCounter = 0
+        elif pieceMoveCounter % 4 == 0: 
+            movePiece(pieces[CURRENTPIECE], DOWN) 
+            pieceMoveCounter = 0
+
+        if movePieceLeft and pieceHitSide(pieces[CURRENTPIECE]) != 'LEFT WALL' and not pieceHitPileFromRight(pieces[CURRENTPIECE], pile):
+            movePiece(pieces[CURRENTPIECE], LEFT)
+
+        if movePieceRight and pieceHitSide(pieces[CURRENTPIECE]) != 'RIGHT WALL' and not pieceHitPileFromLeft(pieces[CURRENTPIECE], pile):
+            movePiece(pieces[CURRENTPIECE], RIGHT)
+
+        if speedUp:
+            speedFactor = 3
+        else:
+            speedFactor = 1
+
+        for event in pygame.event.get(): 
+            if event.type == QUIT:
+                terminate()
+            elif event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    terminate()
+                if event.key == K_SPACE:
+                    pieces[CURRENTPIECE] = rotatePiece(pieces[CURRENTPIECE], pile)
+                if event.key == K_LEFT or event.key == K_a:
+                    movePieceLeft = True
+                if event.key == K_RIGHT or event.key == K_d:
+                    movePieceRight = True
+                if event.key == K_DOWN or event.key == K_s:
+                    speedUp = True
+            elif event.type == KEYUP:
+                if event.key == K_LEFT or event.key == K_a:
+                    movePieceLeft = False
+                if event.key == K_RIGHT or event.key == K_d:
+                    movePieceRight = False
+                if event.key == K_DOWN or event.key == K_s:
+                    speedUp = False
+
+        fullRowYs = checkFullRow(pile)
+        score = removeAndScoreRows(fullRowYs, pile)
+        totalScore += score
+        moveRows(fullRowYs, pile)
         
-    pygame.quit()
-    sys.exit()
+        if gameLose(pieces[CURRENTPIECE], pile):
+            break
+
+        DISPLAYSURF.fill(BGCOLOR)
+        drawSideWindow()
+        drawScore(totalScore)
+        drawGrid(0, WINDOWWIDTH_TETRIS, 0, WINDOWHEIGHT)
+        drawPieceOrPile(pieces[CURRENTPIECE])
+        drawPieceOrPile(pieces[NEXTPIECE])
+        drawPieceOrPile(pile)
+        pygame.display.update()
+        FPSCLOCK.tick(FPS*speedFactor)
+
         
 if __name__ == '__main__':
     main()
