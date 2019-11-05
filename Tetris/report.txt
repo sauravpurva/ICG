@@ -1,0 +1,7 @@
+Updates:-
+
+1) defined functions when block hit bottom and side(pieceHitSide(),pieceHitBottom(),
+2) function for adding one pile to another pile
+3) to check if a row is full or not and update score accordingly.
+4) Scoring
+5) show game window.

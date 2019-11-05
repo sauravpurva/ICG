@@ -3,6 +3,8 @@ from pygame.locals import *
 
 def generatePiece():
 
+    # choose random piece
+
     pieceChoices = (PIECE_T, PIECE_L, PIECE_J, PIECE_Z, PIECE_S, PIECE_O, PIECE_I)
     pieceShape = random.choice(pieceChoices)
     
@@ -25,51 +27,53 @@ def generatePiece():
     
 def placePiece(pieceShape, pieceColors, startx, starty):
 
+    # place piece at starting coordinates
+
     if pieceShape == PIECE_T:
         pieceColors = {'lite': LITERED, 'dark': DARKRED}
-        piece = [{'x': startx     , 'y': starty     , 'block colors': pieceColors}, # pivot point
+        piece = [{'x': startx     , 'y': starty     , 'block colors': pieceColors},
                  {'x': startx - 1 , 'y': starty     , 'block colors': pieceColors},
                  {'x': startx + 1 , 'y': starty     , 'block colors': pieceColors},
                  {'x': startx     , 'y': starty + 1 , 'block colors': pieceColors}]
 
     elif pieceShape == PIECE_L:
         pieceColors = {'lite': LITEBLUE, 'dark': DARKBLUE}
-        piece = [{'x': startx     , 'y': starty     , 'block colors': pieceColors}, # pivot point
+        piece = [{'x': startx     , 'y': starty     , 'block colors': pieceColors}, 
                  {'x': startx - 1 , 'y': starty     , 'block colors': pieceColors},
                  {'x': startx + 1 , 'y': starty     , 'block colors': pieceColors},
                  {'x': startx - 1 , 'y': starty + 1 , 'block colors': pieceColors}]
 
     elif pieceShape == PIECE_J:
         pieceColors = {'lite': LITEGREEN, 'dark': DARKGREEN}
-        piece = [{'x': startx     , 'y': starty     , 'block colors': pieceColors}, # pivot point
+        piece = [{'x': startx     , 'y': starty     , 'block colors': pieceColors}, 
                  {'x': startx - 1 , 'y': starty     , 'block colors': pieceColors},
                  {'x': startx + 1 , 'y': starty     , 'block colors': pieceColors},
                  {'x': startx + 1 , 'y': starty + 1 , 'block colors': pieceColors}]
 
     elif pieceShape == PIECE_Z:
         pieceColors = {'lite': LITEYELLOW, 'dark': DARKYELLOW}
-        piece = [{'x': startx     , 'y': starty     , 'block colors': pieceColors}, # pivot point
+        piece = [{'x': startx     , 'y': starty     , 'block colors': pieceColors}, 
                  {'x': startx - 1 , 'y': starty     , 'block colors': pieceColors},
                  {'x': startx     , 'y': starty + 1 , 'block colors': pieceColors},
                  {'x': startx + 1 , 'y': starty + 1 , 'block colors': pieceColors}]
                     
     elif pieceShape == PIECE_S:
         pieceColors = {'lite': LITEPURPLE, 'dark': DARKPURPLE}
-        piece = [{'x': startx     , 'y': starty     , 'block colors': pieceColors}, # pivot point
+        piece = [{'x': startx     , 'y': starty     , 'block colors': pieceColors}, 
                  {'x': startx + 1 , 'y': starty     , 'block colors': pieceColors},
                  {'x': startx     , 'y': starty + 1 , 'block colors': pieceColors},
                  {'x': startx - 1 , 'y': starty + 1 , 'block colors': pieceColors}]
                     
     elif pieceShape == PIECE_O:
         pieceColors = {'lite': LITEORANGE, 'dark': DARKORANGE}
-        piece = [{'x': startx     , 'y': starty     , 'block colors': pieceColors}, # pivot point
+        piece = [{'x': startx     , 'y': starty     , 'block colors': pieceColors}, 
                  {'x': startx + 1 , 'y': starty     , 'block colors': pieceColors},
                  {'x': startx     , 'y': starty + 1 , 'block colors': pieceColors},
                  {'x': startx + 1 , 'y': starty + 1 , 'block colors': pieceColors}]
         
     elif pieceShape == PIECE_I:
         pieceColors = {'lite': LITETEAL, 'dark': DARKTEAL}
-        piece = [{'x': startx     , 'y': starty - 1 , 'block colors': pieceColors}, # pivot point
+        piece = [{'x': startx     , 'y': starty - 1 , 'block colors': pieceColors}, 
                  {'x': startx     , 'y': starty     , 'block colors': pieceColors},
                  {'x': startx     , 'y': starty + 1 , 'block colors': pieceColors},
                  {'x': startx     , 'y': starty + 2 , 'block colors': pieceColors}]
@@ -77,6 +81,8 @@ def placePiece(pieceShape, pieceColors, startx, starty):
     return piece
 
 def movePiece(piece, direction):
+
+    # move piece one cell in specified direction
 
     if direction == UP:
         for i in range(len(piece)):
@@ -94,6 +100,8 @@ def movePiece(piece, direction):
     return piece
 
 def rotatePiece(piece, pile):
+
+    # rotate piece 90 deg clockwise
 
     piv_x = piece[PIVOT]['x'] 
     piv_y = piece[PIVOT]['y']
@@ -139,6 +147,8 @@ def rotatePiece(piece, pile):
 
 def pieceHitSide(piece):
 
+    # check if piece has collided with side
+
     for block in piece:
         blockRect = pygame.Rect(block['x']*CELLSIZE, block['y']*CELLSIZE, CELLSIZE, CELLSIZE)
         if blockRect.left == 0:
@@ -150,6 +160,8 @@ def pieceHitSide(piece):
 
 def pieceHitBottom(piece):
 
+    # check if piece has collided with wall
+
     for block in piece:
         blockRect = pygame.Rect(block['x']*CELLSIZE, block['y']*CELLSIZE, CELLSIZE, CELLSIZE)
         if blockRect.bottom == WINDOWHEIGHT:
@@ -159,10 +171,14 @@ def pieceHitBottom(piece):
 
 def addPieceToPile(piece, pile):
 
+    # add piece to pile
+
     for block in piece:
         pile.append(block)
 
 def pieceHitPileFromTop(piece, pile):
+
+    # check if piece has collided with pile from top
 
     for pieceBlock in piece:
         pieceBlockRect = pygame.Rect(pieceBlock['x']*CELLSIZE, pieceBlock['y']*CELLSIZE, CELLSIZE, CELLSIZE)
@@ -175,6 +191,8 @@ def pieceHitPileFromTop(piece, pile):
 
 def pieceHitPileFromLeft(piece, pile):
 
+    # check if piece has collided with pile from left
+
     for pieceBlock in piece:
         pieceBlockRect = pygame.Rect(pieceBlock['x']*CELLSIZE, pieceBlock['y']*CELLSIZE, CELLSIZE, CELLSIZE)
         for pileBlock in pile:
@@ -186,6 +204,8 @@ def pieceHitPileFromLeft(piece, pile):
 
 def pieceHitPileFromRight(piece, pile):
 
+    # check if piece has collided with pile from right
+
     for pieceBlock in piece:
         pieceBlockRect = pygame.Rect(pieceBlock['x']*CELLSIZE, pieceBlock['y']*CELLSIZE, CELLSIZE, CELLSIZE)
         for pileBlock in pile:
@@ -196,6 +216,8 @@ def pieceHitPileFromRight(piece, pile):
     return False
 
 def checkFullRow(pile):
+
+    # checks if there is a full row in pile, returns row value (y coordinate) if full
 
     blockInCell = blankBoolDS(CELLWIDTH_TETRIS, CELLHEIGHT)
     fullRowYs = []
@@ -211,6 +233,8 @@ def checkFullRow(pile):
 
 def removeAndScoreRows(fullRowYs, pile):
 
+    # remove all dicts in pile with y in fullRowYs (list of full rows, y coordinates)
+
     for block in pile[:]:
         if block['y'] in fullRowYs:
             pile.remove(block)
@@ -223,6 +247,8 @@ def removeAndScoreRows(fullRowYs, pile):
     return score
 
 def moveRows(fullRowYs, pile):
+
+    # move blocks in pile based on which rows are empty (initially full but removeRows used)
 
     n = 0
     nList = []
@@ -241,6 +267,8 @@ def moveRows(fullRowYs, pile):
 
 def blankBoolDS(sizeX, sizeY):
 
+    # creates "blank" boolean data structure (all False values)
+
     boolDS = []
     for y in range(sizeY):
         boolDS.append([False]*sizeX)
@@ -249,6 +277,8 @@ def blankBoolDS(sizeX, sizeY):
 
 def gameLose(piece, pile):
 
+    # if pile overlaps piece, game over
+
     for pileBlock in pile:
         if pileBlock['y'] in range(0,2): 
             return True
@@ -256,6 +286,8 @@ def gameLose(piece, pile):
     return False
 
 def drawPieceOrPile(pieceOrPile):
+
+    # draw piece onto board surface
 
     for block in pieceOrPile:
         x = block['x'] * CELLSIZE
@@ -267,6 +299,8 @@ def drawPieceOrPile(pieceOrPile):
 
 def drawSideWindow():
 
+    # draw side window, which displays next piece and score
+
     sideWindowRect = pygame.Rect(WINDOWWIDTH_TETRIS, 0, WINDOWWIDTH_SIDE, WINDOWHEIGHT)
     nextPieceRect = pygame.Rect(0, 0, CELLSIZE*5, CELLSIZE*6)
     nextPieceRect.centerx = WINDOWWIDTH_TETRIS+0.5*WINDOWWIDTH_SIDE
@@ -276,6 +310,8 @@ def drawSideWindow():
     pygame.draw.rect(DISPLAYSURF, BGCOLOR, nextPieceRect)
 
 def drawScore(totalScore):
+
+    # draw score onto side window
     
     scoreTitleSurf = BASICFONT.render('SCORE:', True, TEXTCOLOR)
     scoreTitleRect = scoreTitleSurf.get_rect()
@@ -291,6 +327,8 @@ def drawScore(totalScore):
     
 def drawGrid(start_x, end_x, start_y, end_y):
 
+    # draw gridlines
+
     for x in range(start_x, end_x+CELLSIZE, CELLSIZE):
         pygame.draw.line(DISPLAYSURF, GRIDCOLOR, (x, start_y), (x, end_y))
     for y in range(start_y, end_y, CELLSIZE): 
@@ -298,6 +336,8 @@ def drawGrid(start_x, end_x, start_y, end_y):
 
 def showGameOver():
     
+    # shows game over screen
+
     gameOverFont = pygame.font.SysFont('Courier New', 36)
     gameSurf = gameOverFont.render('GAME', True, TEXTCOLOR)
     overSurf = gameOverFont.render('OVER', True, TEXTCOLOR)
@@ -322,6 +362,8 @@ def showGameOver():
 
 def drawPressKeyMsg():
 
+    # shows "press any key to continue)
+
     pressKeyFont = pygame.font.SysFont('Courier New', 16)
 
     pressKey1Surf = pressKeyFont.render('PRESS ANY KEY', True, TEXTCOLOR)
@@ -337,6 +379,8 @@ def drawPressKeyMsg():
     DISPLAYSURF.blit(pressKey2Surf, pressKey2Rect)
 
 def checkForKeyPress():
+
+    # checks for key press and reacts accordingly
     
     if len(pygame.event.get(QUIT)) > 0:
         terminate()
@@ -349,6 +393,8 @@ def checkForKeyPress():
     return keyUpEvents[0].key
 
 def terminate():
+
+    #exit program
         
     pygame.quit()
     sys.exit()
@@ -418,7 +464,7 @@ def main():
     global FPSCLOCK, DISPLAYSURF, BASICFONT
 
     pygame.init()
-    FPSCLOCK = pygame.time.Clock()
+    FPSCLOCK = pygame.time.CURRENTPIECElock()
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH_TOTAL, WINDOWHEIGHT))
     BASICFONT = pygame.font.SysFont('Courier New', 24)
     pygame.display.set_caption('Tetris')
